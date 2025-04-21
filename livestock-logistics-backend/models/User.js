@@ -5,7 +5,10 @@ const UserSchema = new mongoose.Schema({
   email: { type: String, unique: true },
   phone: {type: String, required: true, match: [/^[6-9]\d{9}$/, 'Please enter a valid 10-digit Indian phone number']},
   password: String,
-  role: { type: String, enum: ['sender', 'transporter', 'admin'], default: 'sender' }
+  role: { type: String, enum: ['sender', 'transporter', 'admin'], default: 'sender' },
+  resetToken: String,
+  resetExpires: Date
+
 });
 
 module.exports = mongoose.model('User', UserSchema);

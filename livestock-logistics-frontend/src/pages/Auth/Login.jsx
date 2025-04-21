@@ -56,6 +56,9 @@ function Login() {
           >
             Login
           </button>
+          <p className="text-right text-sm text-blue-600 hover:underline cursor-pointer" onClick={() => navigate('/forgot-password')}>
+            Forgot Password?
+          </p>
         </form>
       </div>
     </div>

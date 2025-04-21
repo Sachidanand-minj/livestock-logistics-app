@@ -1,41 +1,43 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Login from './pages/Auth/Login';
-// import SenderDashboard from './pages/Dashboard/Sender/SenderDashboard';
-// import TransporterDashboard from './pages/Dashboard/Transporter/TransporterDashboard';
-// import AdminDashboard from './pages/Dashboard/Admin/AdminDashboard';
-import Register from './pages/Auth/Register';
-import Navbar from './components/Navbar';
-import PrivateRoute from './components/PrivateRoute';
-import RoleRouter from './RoleRouter';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+// Public Pages
+import Login from './pages/Auth/Login';
+import Register from './pages/Auth/Register';
+import ForgotPassword from './pages/Auth/ForgotPassword';
+import ResetPassword from './pages/Auth/ResetPassword';
 
-// const RoleRouter = () => {
-//   const role = localStorage.getItem('userRole');
-//   switch (role) {
-//     case 'sender': return <SenderDashboard />;
-//     case 'transporter': return <TransporterDashboard />;
-//     case 'admin': return <AdminDashboard />;
-//     default: return <Navigate to="/login" />;
-//   }
-// };
+// Helpers
+import RoleRouter from './RoleRouter';
+import Navbar from './components/Navbar';
+
+// Optional: NotFound or Home
+const NotFound = () => <div className="p-8 text-center text-red-600">404 - Page Not Found</div>;
+const Home = () => <div className="p-8 text-center">Welcome to Livestock Logistics 🚚</div>;
 
 function App() {
   return (
-    <>
     <Router>
       <Navbar />
+      <ToastContainer position="top-right" />
+
       <Routes>
+        {/* Public Routes */}
+        <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/dashboard" element={<PrivateRoute><RoleRouter /></PrivateRoute>} />
-        <Route path="*" element={<Navigate to="/login" />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
+
+        {/* Unified Dashboard Route */}
+        <Route path="/dashboard" element={<RoleRouter />} />
+
+        {/* Fallback */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
-      <ToastContainer position="top-center" />
-    </>
   );
 }
 
