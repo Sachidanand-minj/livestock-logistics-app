@@ -13,6 +13,15 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  useEffect(() => {
+    const stored = localStorage.getItem('avatar');
+    if (stored) setAvatar(stored);
+    else {
+      // fallback: fetch /api/user/me
+    }
+  }, []);
+
+
   // Sync avatar & name from localStorage
   useEffect(() => {
     const syncProfile = () => {
@@ -56,8 +65,12 @@ const Navbar = () => {
   }, []);
 
   const handleLogout = () => {
-    localStorage.clear();
-    window.location.href = '/login';
+    localStorage.removeItem('token');
+    localStorage.removeItem('userRole');
+    localStorage.removeItem('name');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('avatar');
+    navigate('/login');
   };
 
   return (
@@ -104,7 +117,7 @@ const Navbar = () => {
                   <div className="border-t my-1"></div>
                   <button
                     onClick={() => {
-                      navigate('/dashboard?tab=create');
+                      navigate('/dashboard?tab=overview');
                       setShowMenu(false);
                     }}
                     className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100"

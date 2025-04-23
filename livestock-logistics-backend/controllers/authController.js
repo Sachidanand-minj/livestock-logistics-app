@@ -33,7 +33,7 @@ exports.loginUser = async (req, res) => {
     role: user.role,
     name: user.name,        // ✅ ensure this exists
     userId: user._id,
-    avatar: user.avatar || ''
+    avatar: user.avatar ? `${req.protocol}://${req.get('host')}${user.avatar}` : null
   });
 };
 

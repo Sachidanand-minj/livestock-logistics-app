@@ -6,6 +6,7 @@ const UserSchema = new mongoose.Schema({
   phone: {type: String, required: true, match: [/^[6-9]\d{9}$/, 'Please enter a valid 10-digit Indian phone number']},
   password: String,
   role: { type: String, enum: ['sender', 'transporter', 'admin'], default: 'sender' },
+  avatar: String,
   resetToken: String,
   resetExpires: Date
 
