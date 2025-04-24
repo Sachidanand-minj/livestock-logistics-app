@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
 
-const GOOGLE_MAPS_API_KEY = 'AIzaSyBW98Mn251z5in7weHa7xkx75-cPysttgY';
+const GOOGLE_MAPS_API_KEY = 'GOOGLE_MAPS_API_KEY';
 
 const AdminTracking = () => {
   const [shipments, setShipments] = useState([]);
