@@ -69,7 +69,7 @@ const AdminDashboard = () => {
 
       {/* ─── Sidebar ───────────────────────────────── */}
       <aside className={`
-          fixed md:static top-0 left-0 h-full bg-white z-50 p-4 w-64 border-r shadow-sm
+          fixed md:static top-0 left-0 h-full bg-white z-50 p-4 w-64 border-r border-t shadow-sm
           transform transition-transform duration-300 ease-in-out
           ${showSidebar ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0
         `}>

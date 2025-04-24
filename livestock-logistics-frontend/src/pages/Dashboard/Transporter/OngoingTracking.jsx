@@ -1,4 +1,3 @@
-// src/pages/Dashboard/Transporter/OngoingTracking.jsx
 import React, { useEffect, useState, useRef } from 'react';
 import io from 'socket.io-client';
 import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';

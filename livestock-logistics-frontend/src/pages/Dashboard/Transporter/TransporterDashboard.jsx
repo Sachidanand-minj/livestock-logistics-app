@@ -64,7 +64,7 @@ const TransporterDashboard = () => {
       <aside className={`
           fixed md:static top-0 left-0 h-full bg-white z-50
           transform transition-transform duration-300 ease-in-out
-          border-r shadow-sm p-4 w-64
+          border-r border-t shadow-sm p-4 w-64
           ${showSidebar ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0
         `}>
         <div className="md:hidden flex justify-end mb-4">
