@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+
+import SummaryOverview from '../../../components/SummaryOverview';
 import CreateShipment from './CreateShipment';
 import ViewShipments from './ViewShipments';
 import UserProfile from '../../Common/UserProfile';
 import SidebarProfile from '../../Common/SidebarProfile';
-import { useNavigate, useLocation } from 'react-router-dom';
+
+import SenderTracking from './SenderTracking';
 
 const SenderDashboard = () => {
   const navigate = useNavigate();
@@ -62,8 +66,10 @@ const SenderDashboard = () => {
 
         <SidebarProfile />
         <nav className="space-y-2">
+          <button onClick={() => { setActiveTab('overview'); setShowSidebar(false); }} className={`block w-full text-left px-4 py-2 rounded hover:bg-blue-100 ${activeTab === 'overview' ? 'text-blue-600 font-semibold' : 'text-gray-700'}`}>Dashboard</button>
           <button onClick={() => { setActiveTab('create'); setShowSidebar(false); }} className={`block w-full text-left px-4 py-2 rounded hover:bg-blue-100 ${activeTab === 'create' ? 'text-blue-600 font-semibold' : 'text-gray-700'}`}>Create Shipment</button>
           <button onClick={() => { setActiveTab('view'); setShowSidebar(false); }} className={`block w-full text-left px-4 py-2 rounded hover:bg-blue-100 ${activeTab === 'view' ? 'text-blue-600 font-semibold' : 'text-gray-700'}`}>View Shipments</button>
+          <button onClick={() => { setActiveTab('tracking'); setShowSidebar(false); }} className={`block w-full text-left px-4 py-2 rounded hover:bg-blue-100 ${activeTab === 'tracking' ? 'text-blue-600 font-semibold' : 'text-gray-700'}`}>Tracking</button>
           <button onClick={() => { setActiveTab('profile'); setShowSidebar(false); }} className={`block w-full text-left px-4 py-2 rounded hover:bg-blue-100 ${activeTab === 'profile' ? 'text-blue-600 font-semibold' : 'text-gray-700'}`}>Edit Profile</button>
         </nav>
 
@@ -79,8 +85,10 @@ const SenderDashboard = () => {
 
       {/* Main Content */}
       <main className="flex-1 p-4 mt-4 md:mt-0">
+        {activeTab==='overview' && <SummaryOverview role="sender" />}
         {activeTab === 'create' && <CreateShipment />}
         {activeTab === 'view' && <ViewShipments />}
+        {activeTab === 'tracking' && <SenderTracking />}
         {activeTab === 'profile' && <UserProfile />}
       </main>
 
@@ -88,6 +96,7 @@ const SenderDashboard = () => {
       <nav className="fixed bottom-0 left-0 right-0 bg-white border-t p-2 flex justify-around md:hidden shadow-md z-50">
         <button onClick={() => setActiveTab('create')} className={`flex-1 text-sm py-1 ${activeTab === 'create' ? 'text-blue-600 font-semibold' : 'text-gray-600'}`}>Create</button>
         <button onClick={() => setActiveTab('view')} className={`flex-1 text-sm py-1 ${activeTab === 'view' ? 'text-blue-600 font-semibold' : 'text-gray-600'}`}>Shipments</button>
+        <button onClick={() => setActiveTab('tracking')} className={`flex-1 text-sm py-1 ${activeTab === 'tracking' ? 'text-blue-600 font-semibold' : 'text-gray-600'}`}>Tracking</button>
         <button onClick={() => setActiveTab('profile')} className={`flex-1 text-sm py-1 ${activeTab === 'profile' ? 'text-blue-600 font-semibold' : 'text-gray-600'}`}>Profile</button>
         <button onClick={handleLogout} className="flex-1 text-sm text-red-500 py-1">Logout</button>
       </nav>

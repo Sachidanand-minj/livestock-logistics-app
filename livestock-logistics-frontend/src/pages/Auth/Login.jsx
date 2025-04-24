@@ -4,27 +4,32 @@ import { Link } from 'react-router-dom';
 import loginImage from "../../assets/Livestock-transport.jpg";
 
 function Login() {
-  const [email, setEmail] = useState('');
+  const [email, setEmail]       = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate();
+  const navigate                = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    const res = await fetch('http://localhost:5000/api/auth/login', {
+    const res  = await fetch('http://localhost:5000/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),
     });
-
     const data = await res.json();
 
     if (res.ok) {
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('userRole', data.role);
-      localStorage.setItem('userId', data.userId);
-      localStorage.setItem('name', data.name);
-      localStorage.setItem('phone', data.phone);
+      // Destructure everything your API actually returns
+      const { token, role, userId, name, phone, avatar } = data;
+
+      // Store in localStorage
+      localStorage.setItem('token', token);
+      localStorage.setItem('userRole', role);
+      localStorage.setItem('userId', userId);
+      localStorage.setItem('name', name);
+      if (phone)  localStorage.setItem('phone', phone);
+      if (avatar) localStorage.setItem('avatar', avatar);
+
       navigate('/dashboard');
     } else {
       alert(data.error || 'Login failed');

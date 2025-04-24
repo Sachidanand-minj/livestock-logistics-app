@@ -9,26 +9,43 @@
 //   });
 
 //   io.on('connection', (socket) => {
-//     console.log('New transporter connected');
+//     console.log('🚛 Transporter connected via Socket.IO');
 
+//     // Receive location updates
 //     socket.on('locationUpdate', async ({ shipmentId, lat, lng }) => {
-//       await Shipment.findByIdAndUpdate(shipmentId, {
-//         currentLocation: { lat, lng },
-//         status: 'In Transit'
-//       });
-//       io.emit('locationUpdated', { shipmentId, lat, lng });
+//       try {
+//         await Shipment.findByIdAndUpdate(shipmentId, {
+//           currentLocation: { lat, lng },
+//           status: 'In Transit',
+//           'timestamps.startedAt': new Date()
+//         });
+
+//         // Broadcast to frontend
+//         io.emit('locationUpdated', { shipmentId, lat, lng });
+//       } catch (err) {
+//         console.error('Location update error:', err.message);
+//       }
 //     });
 
+//     // Shipment complete
 //     socket.on('completeShipment', async ({ shipmentId }) => {
-//       await Shipment.findByIdAndUpdate(shipmentId, {
-//         status: 'Delivered',
-//         'timestamps.completedAt': new Date()
-//       });
-//       io.emit('shipmentCompleted', { shipmentId });
+//       try {
+//         await Shipment.findByIdAndUpdate(shipmentId, {
+//           status: 'Delivered',
+//           'timestamps.completedAt': new Date()
+//         });
+
+//         io.emit('shipmentCompleted', { shipmentId });
+//       } catch (err) {
+//         console.error('Completion error:', err.message);
+//       }
+//     });
+
+//     socket.on('disconnect', () => {
+//       console.log('Transporter disconnected');
 //     });
 //   });
 // };
-
 
 const Shipment = require('../models/Shipment');
 
@@ -43,23 +60,27 @@ module.exports = (server) => {
   io.on('connection', (socket) => {
     console.log('🚛 Transporter connected via Socket.IO');
 
-    // Receive location updates
     socket.on('locationUpdate', async ({ shipmentId, lat, lng }) => {
       try {
-        await Shipment.findByIdAndUpdate(shipmentId, {
-          currentLocation: { lat, lng },
-          status: 'In Transit',
-          'timestamps.startedAt': new Date()
-        });
+        const shipment = await Shipment.findById(shipmentId);
+        if (!shipment) return;
 
-        // Broadcast to frontend
+        // Push to travel history and update current location
+        shipment.travelHistory = shipment.travelHistory || [];
+        shipment.travelHistory.push({ lat, lng, timestamp: new Date() });
+        shipment.currentLocation = { lat, lng };
+        shipment.status = 'In Transit';
+        shipment.timestamps = shipment.timestamps || {};
+        shipment.timestamps.startedAt = shipment.timestamps.startedAt || new Date();
+
+        await shipment.save();
+
         io.emit('locationUpdated', { shipmentId, lat, lng });
       } catch (err) {
         console.error('Location update error:', err.message);
       }
     });
 
-    // Shipment complete
     socket.on('completeShipment', async ({ shipmentId }) => {
       try {
         await Shipment.findByIdAndUpdate(shipmentId, {

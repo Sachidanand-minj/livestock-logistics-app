@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
 const SidebarProfile = () => {
-//   const [avatar, setAvatar] = useState('');
-// const [avatar, setAvatar] = useState(localStorage.getItem('avatar') || '');
-//   const [name, setName] = useState('');
   const [role, setRole] = useState('');
   const token = localStorage.getItem('token');
   const [avatar, setAvatar] = useState(localStorage.getItem('avatar'));
