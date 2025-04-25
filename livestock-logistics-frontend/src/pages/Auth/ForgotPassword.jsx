@@ -1,50 +1,82 @@
 import React, { useState } from 'react';
+// import { useNavigate } from 'react-router-dom';
+import lockImage from '../../assets/login-left-icon.png';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  // const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const res = await fetch('http://localhost:5000/api/auth/forgot-password', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email })
-    });
+    try {
+      const res = await fetch('http://localhost:5000/api/auth/forgot-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
 
-    if (res.ok) {
-      setSubmitted(true);
-    } else {
-      alert('Something went wrong. Please try again.');
+      if (res.ok) {
+        setSubmitted(true);
+      } else {
+        alert('Something went wrong. Please try again.');
+      }
+    } catch (error) {
+      console.error(error);
+      alert('Network error. Please try again later.');
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-      <div className="bg-white p-6 rounded shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-4 text-center">Forgot Password</h2>
+    <div className="min-h-screen flex items-center justify-center px-4 bg-white">
+      <div className="max-w-4xl w-full grid md:grid-cols-2 gap-6">
+        
+        {/* Left Section */}
+        <div className="flex flex-col justify-center">
+          
 
-        {submitted ? (
-          <p className="text-green-600 text-center">Check your email for the reset link.</p>
-        ) : (
+         <h2 className="text-3xl font-bold mb-2">Forgot your password?</h2>
+          <p className="mb-6 text-gray-600">
+            Don’t worry, happens to all of us. Enter your email below to recover your password
+          </p>
+
           <form onSubmit={handleSubmit} className="space-y-4">
-            <input
-              type="email"
-              placeholder="Enter your registered email"
-              className="w-full p-2 border rounded"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
+            <div>
+              <label className="text-sm font-medium">Email</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="mt-1 w-full border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
+                placeholder="your@email.com"
+                required
+              />
+            </div>
+
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+              className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 rounded transition duration-200"
             >
-              Send Reset Link
+              Submit
             </button>
           </form>
-        )}
+
+          {submitted && (
+            <p className="mt-4 text-green-600 font-medium">
+              Password reset link sent to your email.
+            </p>
+          )}
+        </div>
+
+        {/* Right Section with Image */}
+        <div className="hidden md:flex w-full h-full items-center justify-center bg-gray-100 rounded-md">
+          <img
+            src={lockImage}
+            alt="Security Visual"
+            className="w-full h-full object-contain p-4"
+          />
+        </div>
       </div>
     </div>
   );

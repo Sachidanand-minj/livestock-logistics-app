@@ -71,3 +71,11 @@ button:focus-visible {
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Home . css*/
+.left-5 {
+  left: 4.25rem;
+}
+.bottom-8 {
+  bottom: 10rem;
+}

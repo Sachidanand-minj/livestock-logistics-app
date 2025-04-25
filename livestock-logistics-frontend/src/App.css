@@ -40,3 +40,10 @@
 .read-the-docs {
   color: #888;
 }
+/* Home . css*/
+.left-5 {
+  left: 4.25rem;
+}
+.bottom-8 {
+  bottom: 5rem;
+}
