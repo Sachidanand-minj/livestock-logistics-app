@@ -16,7 +16,6 @@ import Navbar from './components/Navbar';
 
 // Optional: NotFound or Home
 const NotFound = () => <div className="p-8 text-center text-red-600">404 - Page Not Found</div>;
-// const Home = () => <div className="p-8 text-center">Welcome to Livestock Logistic 🚚</div>;
 
 // ✨ Updated Home Component ✨
 const Home = () => {
@@ -25,9 +24,6 @@ const Home = () => {
       className="relative min-h-screen bg-cover bg-center flex items-center justify-center p-8 text-center"
       style={{ backgroundImage: `url(${bgImage})` }} // Notice the template string here
     >
-      {/* <h1 className="text-3xl font-bold text-white drop-shadow-lg">
-        Welcome to Livestock Logistic 🚚
-      </h1> */}
 
       {/* Register Now Button */}
       <a

@@ -45,6 +45,10 @@ const Navbar = () => {
           setAvatar(avatarUrl);
           localStorage.setItem('avatar', avatarUrl);
         }
+        if (data.name) {
+          setName(data.name);
+          localStorage.setItem('name', data.name);
+        }
       } catch (err) {
         console.error("Failed to fetch avatar:", err);
       }

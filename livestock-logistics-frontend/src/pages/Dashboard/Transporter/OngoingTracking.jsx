@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import io from 'socket.io-client';
 import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
 
-const socket = io('http://localhost:5000');
+const socket = io('http://localhost:5000/');
 const GOOGLE_MAPS_API_KEY = 'GOOGLE_MAPS_API_KEY';
 
 const OngoingTracking = () => {

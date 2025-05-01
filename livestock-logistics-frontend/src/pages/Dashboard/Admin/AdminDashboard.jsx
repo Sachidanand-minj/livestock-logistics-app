@@ -4,6 +4,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import SummaryOverview from '../../../components/SummaryOverview';
 import SidebarProfile from '../../Common/SidebarProfile';
 import UserList from './UserList';
+import AdminAddUser from './AdminAddUser';
+import PendingUserApproval from './PendingUserApproval'; 
 import ShipmentMonitor from './ShipmentMonitor';
 import AdminTracking from './AdminTracking';
 import UserProfile from '../../Common/UserProfile';
@@ -82,11 +84,13 @@ const AdminDashboard = () => {
 
         <nav className="space-y-2 mt-6">
           {[
-            { key:'overview', label:'Dashboard' },
-            { key: 'users',     label: 'User List'         },
-            { key: 'shipments', label: 'Shipment Monitor'  },
-            { key: 'tracking',  label: 'Tracking'          },
-            { key: 'profile',   label: 'Edit Profile'      },
+            { key:'overview',   label:'Dashboard'           },
+            { key: 'users',     label: 'User List'          },
+            { key: 'createUser', label: 'Create User'       },
+            { key: 'pending',   label: 'Pending Users'      },
+            { key: 'shipments', label: 'Shipment Monitor'   },
+            { key: 'tracking',  label: 'Tracking'           },
+            { key: 'profile',   label: 'Edit Profile'       },
           ].map(({ key, label }) => (
             <button
               key={key}
@@ -115,6 +119,8 @@ const AdminDashboard = () => {
       <main className="flex-1 p-4 mt-4 md:mt-0">
         {activeTab==='overview' && <SummaryOverview role="admin" />}
         {activeTab === 'users'     && <UserList />}
+        {activeTab === 'createUser' && <AdminAddUser />}
+        {activeTab === 'pending'  && <PendingUserApproval />}
         {activeTab === 'shipments' && <ShipmentMonitor />}
         {activeTab === 'tracking'  && <AdminTracking />}
         {activeTab === 'profile'   && <UserProfile />}

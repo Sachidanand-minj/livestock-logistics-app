@@ -1,20 +1,24 @@
-
 const mongoose = require('mongoose');
+const bcrypt   = require('bcryptjs');
 
 const UserSchema = new mongoose.Schema({
   name: String,
-  email: { type: String, unique: true },
+  email:    { type: String, required: true, unique: true, lowercase: true, trim: true },
   phone: {
     type: String,
     required: true,
     match: [/^[6-9]\d{9}$/, 'Please enter a valid 10-digit Indian phone number']
   },
   password: String,
-  role: { type: String, enum: ['sender', 'transporter', 'admin'], default: 'sender' },
+  role: { type: String, enum: ['sender', 'transporter', 'admin'],required: true},
+  status: {
+    type:String,
+    enum:['pending','approved'],
+    default:'pending',
+  },
   avatar: String,
   resetToken: String,
   resetExpires: Date,
-
   transporter: {
     businessName: String,
     businessType: String,
@@ -40,7 +44,7 @@ const UserSchema = new mongoose.Schema({
       bankName: String
     },
     declarationAccepted: Boolean,
-  }
-});
+  }  
+},{ timestamps: true });
 
 module.exports = mongoose.model('User', UserSchema);

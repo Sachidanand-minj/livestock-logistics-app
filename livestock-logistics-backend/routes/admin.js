@@ -2,15 +2,21 @@ const express = require('express');
 const router = express.Router();
 const auth = require('../middlewares/authMiddleware');
 const role = require('../middlewares/roleMiddleware');
-const { getAllUsers, deleteUser, deleteShipment } = require('../controllers/adminController');
+const {
+  getAllUsers,
+  getPendingUsers,
+  approveUser,
+  createUser,
+  deleteUser,
+  deleteShipment
+} = require('../controllers/adminController');
 
-// Get all users
+// 🛡 Protected routes (admin only)
 router.get('/users', auth, role('admin'), getAllUsers);
-
-// Delete user
+router.get('/pending-users', auth, role('admin'), getPendingUsers);
+router.patch('/users/:id/approve', auth, role('admin'), approveUser); // ✅ Add this
+router.post('/users', auth, role('admin'), createUser);
 router.delete('/users/:id', auth, role('admin'), deleteUser);
-
-// Delete shipment
 router.delete('/shipments/:id', auth, role('admin'), deleteShipment);
 
 module.exports = router;

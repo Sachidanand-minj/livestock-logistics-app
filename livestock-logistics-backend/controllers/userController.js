@@ -15,7 +15,11 @@ exports.updateProfile = async (req, res) => {
 
   if (name) user.name = name;
   if (phone) user.phone = phone;
-  if (password) user.password = await bcrypt.hash(password, 10);
+   // ✅ Only update password if provided
+   if (password && password.trim().length > 0) {
+    const hashed = await bcrypt.hash(password, 10);
+    user.password = hashed;
+  }
   if (req.file) {
     updates.avatar = `/uploads/avatars/${req.file.filename}`;  // or wherever you save it
   }

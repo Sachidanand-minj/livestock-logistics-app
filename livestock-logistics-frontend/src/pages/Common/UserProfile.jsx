@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 
 const UserProfile = () => {
   const [user, setUser] = useState({ name: '', phone: '', email: '' });
+  const [newPassword, setNewPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [avatarFile, setAvatarFile] = useState(null);
   const [avatarPreview, setAvatarPreview] = useState('');
   const token = localStorage.getItem('token');
@@ -13,7 +16,6 @@ const UserProfile = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();
-
       if (res.ok) {
         setUser(data);
         if (data.avatar) {
@@ -48,7 +50,6 @@ const UserProfile = () => {
 
   const uploadAvatar = async () => {
     if (!avatarFile) return toast.error('Please select an image file.');
-
     const formData = new FormData();
     formData.append('avatar', avatarFile);
 
@@ -64,7 +65,7 @@ const UserProfile = () => {
         const avatarUrl = `http://localhost:5000${data.avatar}`;
         setAvatarPreview(avatarUrl);
         localStorage.setItem('avatar', avatarUrl);
-        window.dispatchEvent(new Event('storage')); // for navbar updates
+        window.dispatchEvent(new Event('storage'));
         toast.success('Avatar uploaded!');
       } else {
         toast.error(data.error || 'Upload failed');
@@ -77,6 +78,14 @@ const UserProfile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const payload = {
+      name: user.name,
+      phone: user.phone
+    };
+    if (newPassword.trim()) {
+      payload.password = newPassword;
+    }
+
     try {
       const res = await fetch('http://localhost:5000/api/user/update', {
         method: 'PUT',
@@ -84,10 +93,7 @@ const UserProfile = () => {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify({
-          name: user.name,
-          phone: user.phone
-        })
+        body: JSON.stringify(payload)
       });
 
       const data = await res.json();
@@ -95,7 +101,8 @@ const UserProfile = () => {
       if (res.ok) {
         toast.success('Profile updated!');
         localStorage.setItem('name', user.name);
-        await fetchProfile(); // 🔄 Refresh the data
+        await fetchProfile();
+        setNewPassword('');
       } else {
         toast.error(data.error || 'Update failed');
       }
@@ -149,6 +156,23 @@ const UserProfile = () => {
           placeholder="Phone"
           className="w-full p-2 border rounded"
         />
+
+        <div className="relative">
+          <input
+            name="newPassword"
+            type={showPassword ? 'text' : 'password'}
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            className="w-full p-2 border rounded pr-10"
+            placeholder="New Password (optional)"
+          />
+          <span
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute top-1/2 right-3 transform -translate-y-1/2 cursor-pointer text-gray-600"
+          >
+            {showPassword ? <FaEyeSlash /> : <FaEye />}
+          </span>
+        </div>
 
         <button
           type="submit"
