@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const Shipment = require('../models/Shipment');
 const bcrypt = require('bcryptjs');
+const mongoose = require('mongoose');
 
 /**
  * List all users (excluding sensitive fields)
@@ -17,11 +18,11 @@ exports.getAllUsers = async (req, res) => {
 };
 
 /**
- * List all users whose status is still 'pending'
+ * List all users whose verificationStatus is 'pending'
  */
 exports.getPendingUsers = async (req, res) => {
   try {
-    const pending = await User.find({ status: 'pending' })
+    const pending = await User.find({ verificationStatus: 'pending' })
       .select('-password -resetToken -resetExpires');
     res.json(pending);
   } catch (err) {
@@ -31,12 +32,19 @@ exports.getPendingUsers = async (req, res) => {
 };
 
 /**
- * Approve a pending user by setting status → 'approved'
+ * Approve a pending user by setting verificationStatus → 'verified'
  */
 exports.approveUser = async (req, res) => {
   try {
+    const { id } = req.params;
+
+    // Validate MongoDB ObjectId
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ error: 'Invalid user ID' });
+    }
+
     const user = await User.findByIdAndUpdate(
-      req.params.id,
+      id,
       { status: 'approved' },
       { new: true }
     ).select('-password -resetToken -resetExpires');
@@ -52,25 +60,23 @@ exports.approveUser = async (req, res) => {
   }
 };
 
+
 /**
- * Create a new user (admin-only). Auto-approves the account.
+ * Create a new user (admin-only). Auto-verifies the account.
  */
 exports.createUser = async (req, res) => {
   try {
     const { name, email, phone, password, role } = req.body;
 
-    // basic validation
     if (!name || !email || !phone || !password || !role) {
       return res.status(400).json({ error: 'All fields are required' });
     }
 
-    // check for duplicate email
     const exists = await User.findOne({ email });
     if (exists) {
       return res.status(400).json({ error: 'Email already registered' });
     }
 
-    // hash password
     const hashed = await bcrypt.hash(password, 10);
 
     const user = await User.create({
@@ -79,10 +85,9 @@ exports.createUser = async (req, res) => {
       phone,
       password: hashed,
       role,
-      status: 'approved'
+      verificationStatus: 'verified'
     });
 
-    // remove sensitive fields before sending
     const safeUser = user.toObject();
     delete safeUser.password;
     delete safeUser.resetToken;
@@ -137,3 +142,35 @@ exports.deleteShipment = async (req, res) => {
     res.status(500).json({ error: 'Failed to delete shipment' });
   }
 };
+
+/**
+ * Reject a pending user by setting status → 'rejected' and storing a reason
+ */
+exports.rejectUser = async (req, res) => {
+  try {
+    const { reason } = req.body;
+
+    if (!reason || reason.trim().length === 0) {
+      return res.status(400).json({ error: 'Rejection reason is required' });
+    }
+
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      {
+        status: 'rejected',
+        rejectionReason: reason.trim(),
+      },
+      { new: true }
+    ).select('-password -resetToken -resetExpires');
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.json({ message: 'User rejected', user });
+  } catch (err) {
+    console.error('rejectUser error:', err);
+    res.status(500).json({ error: 'Error rejecting user' });
+  }
+};
+

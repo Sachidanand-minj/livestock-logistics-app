@@ -6,6 +6,7 @@ const {
   getAllUsers,
   getPendingUsers,
   approveUser,
+  rejectUser,
   createUser,
   deleteUser,
   deleteShipment
@@ -15,8 +16,11 @@ const {
 router.get('/users', auth, role('admin'), getAllUsers);
 router.get('/pending-users', auth, role('admin'), getPendingUsers);
 router.patch('/users/:id/approve', auth, role('admin'), approveUser); // ✅ Add this
+router.patch('/users/:id/reject', auth, role('admin'), rejectUser);
 router.post('/users', auth, role('admin'), createUser);
 router.delete('/users/:id', auth, role('admin'), deleteUser);
 router.delete('/shipments/:id', auth, role('admin'), deleteShipment);
+
+
 
 module.exports = router;
