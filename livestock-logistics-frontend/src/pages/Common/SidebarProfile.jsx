@@ -30,7 +30,7 @@ useEffect(() => {
       setRole(localStorage.getItem('userRole') || '');
       setName(localStorage.getItem('name') || '');
 
-      const res = await fetch('http://localhost:5000/api/user/me', {
+      const res = await fetch('https://livestocklogistics.animbiz.com/api/user/me', {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -38,7 +38,7 @@ useEffect(() => {
 
       const data = await res.json();
       if (res.ok && data.avatar) {
-        setAvatar(`http://localhost:5000${data.avatar}`);
+        setAvatar(`https://livestocklogistics.animbiz.com/livestock-logistics-backend${data.avatar}`);
       }
     };
 

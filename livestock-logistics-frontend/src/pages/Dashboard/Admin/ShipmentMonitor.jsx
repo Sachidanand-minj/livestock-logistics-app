@@ -10,7 +10,7 @@ const ShipmentMonitor = () => {
   const token = localStorage.getItem('token');
 
   const fetchShipments = async () => {
-    const res = await fetch('http://localhost:5000/api/shipment/all', {
+    const res = await fetch('https://livestocklogistics.animbiz.com/api/shipment/all', {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -31,7 +31,7 @@ const ShipmentMonitor = () => {
   const deleteShipment = async (id) => {
     if (!window.confirm('Delete this shipment?')) return;
 
-    const res = await fetch(`http://localhost:5000/api/admin/shipments/${id}`, {
+    const res = await fetch(`https://livestocklogistics.animbiz.com/api/admin/shipments/${id}`, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${token}`,

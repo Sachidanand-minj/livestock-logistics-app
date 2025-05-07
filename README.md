@@ -53,7 +53,7 @@ A real-time livestock logistics tracking web application featuring role-based da
 
 4. **Access the application**
    - Frontend: http://localhost:3000
-   - Backend:  http://localhost:5000/
+   - Backend:  https://livestocklogistics.animbiz.com/
 
 ## Environment Variables
 
@@ -67,8 +67,8 @@ CLIENT_URL=http://localhost:3000
 
 ### Frontend (`livestock-logistics-frontend/.env.local`)
 ```env
-VITE_API_URL=http://localhost:5000//api
-VITE_SOCKET_URL=http://localhost:5000/
+VITE_API_URL=https://livestocklogistics.animbiz.com//api
+VITE_SOCKET_URL=https://livestocklogistics.animbiz.com/
 ```
 
 ## Project Structure

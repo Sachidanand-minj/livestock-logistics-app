@@ -36,12 +36,12 @@ const Navbar = () => {
   useEffect(() => {
     const fetchAvatar = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/user/me', {
+        const res = await fetch('https://livestocklogistics.animbiz.com/api/user/me', {
           headers: { Authorization: `Bearer ${token}` }
         });
         const data = await res.json();
         if (res.ok && data.avatar) {
-          const avatarUrl = `http://localhost:5000${data.avatar}`;
+          const avatarUrl = `https://livestocklogistics.animbiz.com/livestock-logistics-backend${data.avatar}`;
           setAvatar(avatarUrl);
           localStorage.setItem('avatar', avatarUrl);
         }

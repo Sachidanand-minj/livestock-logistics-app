@@ -5,7 +5,7 @@ import loginImage from "../../assets/Livestock-transport.jpg";
 
 function Register() {
   const navigate = useNavigate();
-  const API = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+  const API = import.meta.env.VITE_API_URL || 'https://livestocklogistics.animbiz.com';
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({

@@ -12,7 +12,7 @@ const SummaryOverview = ({ role }) => {
     const fetchData = async () => {
       try {
         // always fetch all shipments
-        const shpRes = await fetch('http://localhost:5000/api/shipment/all', {
+        const shpRes = await fetch('https://livestocklogistics.animbiz.com/api/shipment/all', {
           headers: { Authorization: `Bearer ${token}` }
         });
         const shipments = (await shpRes.json()) || [];
@@ -47,7 +47,7 @@ const SummaryOverview = ({ role }) => {
         }
         else if (role === 'admin') {
           // fetch users too
-          const usrRes = await fetch('http://localhost:5000/api/admin/users', {
+          const usrRes = await fetch('https://livestocklogistics.animbiz.com/api/admin/users', {
             headers: { Authorization: `Bearer ${token}` }
           });
           const users = await usrRes.json();

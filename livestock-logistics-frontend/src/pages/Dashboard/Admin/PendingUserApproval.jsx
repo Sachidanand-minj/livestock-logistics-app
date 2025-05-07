@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
 // Base API URL (adjust as needed)
-const API = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API = import.meta.env.VITE_API_URL || 'https://livestocklogistics.animbiz.com';
 
 const PendingUserApproval = () => {
   const [pendingUsers, setPendingUsers] = useState([]);
@@ -113,7 +113,7 @@ const PendingUserApproval = () => {
                               path ? (
                                 <li key={key}>
                                   <a
-                                    href={`${API}/${path}`}
+                                    href={`${API}/${path.replace(/^.*?(livestock-logistics-backend\/uploads)/, '$1')}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="text-blue-600 underline"

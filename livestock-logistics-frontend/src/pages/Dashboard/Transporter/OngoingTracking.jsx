@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import io from 'socket.io-client';
 import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
 
-const socket = io('http://localhost:5000/');
+const socket = io('https://livestocklogistics.animbiz.com/');
 const GOOGLE_MAPS_API_KEY = 'GOOGLE_MAPS_API_KEY';
 
 const OngoingTracking = () => {
@@ -21,7 +21,7 @@ const OngoingTracking = () => {
   // Fetch In‑Transit shipments
   useEffect(() => {
     const fetchTrackingShipments = async () => {
-      const res  = await fetch('http://localhost:5000/api/shipment/all', {
+      const res  = await fetch('https://livestocklogistics.animbiz.com/api/shipment/all', {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();

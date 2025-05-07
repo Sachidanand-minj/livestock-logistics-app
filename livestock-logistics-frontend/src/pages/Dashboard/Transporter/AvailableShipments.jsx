@@ -11,7 +11,7 @@ const AvailableShipments = () => {
   const token = localStorage.getItem('token');
 
   const fetchAvailableShipments = async () => {
-    const res = await fetch('http://localhost:5000/api/shipment/all', {
+    const res = await fetch('https://livestocklogistics.animbiz.com/api/shipment/all', {
       headers: { Authorization: `Bearer ${token}` }
     });
 
@@ -63,7 +63,7 @@ const AvailableShipments = () => {
   };
 
   const acceptShipment = async (shipmentId) => {
-    const res = await fetch(`http://localhost:5000/api/shipment/${shipmentId}/accept`, {
+    const res = await fetch(`https://livestocklogistics.animbiz.com/api/shipment/${shipmentId}/accept`, {
       method: 'PATCH',
       headers: { Authorization: `Bearer ${token}` }
     });

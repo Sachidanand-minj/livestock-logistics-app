@@ -19,7 +19,7 @@ const SenderTracking = () => {
   useEffect(() => {
     const fetchTracking = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/shipment/all', {
+        const res = await fetch('https://livestocklogistics.animbiz.com/api/shipment/all', {
           headers: { Authorization: `Bearer ${token}` }
         });
         const data = await res.json();

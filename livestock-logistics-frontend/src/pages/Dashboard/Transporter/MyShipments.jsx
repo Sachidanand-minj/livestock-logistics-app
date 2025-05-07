@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import io from 'socket.io-client';
 
-const socket = io('http://localhost:5000/'); // Backend socket server
+const socket = io('https://livestocklogistics.animbiz.com/'); // Backend socket server
 
 const MyShipments = () => {
   const [myShipments, setMyShipments] = useState([]);
@@ -43,7 +43,7 @@ const MyShipments = () => {
   };
 
   const fetchMyShipments = async () => {
-    const res = await fetch('http://localhost:5000/api/shipment/all', {
+    const res = await fetch('https://livestocklogistics.animbiz.com/api/shipment/all', {
       headers: { Authorization: `Bearer ${token}` }
     });
 

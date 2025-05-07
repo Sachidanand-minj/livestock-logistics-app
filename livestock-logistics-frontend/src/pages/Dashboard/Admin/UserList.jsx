@@ -11,7 +11,7 @@ const UserList = () => {
   const token = localStorage.getItem('token');
 
   const fetchUsers = async () => {
-    const res = await fetch('http://localhost:5000/api/admin/users', {
+    const res = await fetch('https://livestocklogistics.animbiz.com/api/admin/users', {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -32,7 +32,7 @@ const UserList = () => {
   const deleteUser = async (id) => {
     if (!window.confirm('Are you sure you want to delete this user?')) return;
 
-    const res = await fetch(`http://localhost:5000/api/admin/users/${id}`, {
+    const res = await fetch(`https://livestocklogistics.animbiz.com/api/admin/users/${id}`, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${token}`,

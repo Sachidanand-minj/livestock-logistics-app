@@ -13,7 +13,7 @@ const ResetPassword = () => {
     e.preventDefault();
     if (password !== confirm) return setMessage("Passwords do not match.");
 
-    const res = await fetch(`http://localhost:5000/api/auth/reset-password/${token}`, {
+    const res = await fetch(`https://livestocklogistics.animbiz.com/api/auth/reset-password/${token}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ password })

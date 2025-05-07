@@ -10,7 +10,7 @@ const ShipmentHistoryViewer = ({ shipmentId, onClose }) => {
   useEffect(() => {
     const fetchHistory = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/shipment/${shipmentId}/travel-history`, {
+        const res = await fetch(`https://livestocklogistics.animbiz.com/api/shipment/${shipmentId}/travel-history`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         const data = await res.json();

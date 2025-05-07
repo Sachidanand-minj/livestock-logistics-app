@@ -12,14 +12,14 @@ const UserProfile = () => {
 
   const fetchProfile = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/user/me', {
+      const res = await fetch('https://livestocklogistics.animbiz.com/api/user/me', {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();
       if (res.ok) {
         setUser(data);
         if (data.avatar) {
-          const fullUrl = `http://localhost:5000${data.avatar}`;
+          const fullUrl = `https://livestocklogistics.animbiz.com/livestock-logistics-backend${data.avatar}`;
           setAvatarPreview(fullUrl);
           localStorage.setItem('avatar', fullUrl);
         }
@@ -54,7 +54,7 @@ const UserProfile = () => {
     formData.append('avatar', avatarFile);
 
     try {
-      const res = await fetch('http://localhost:5000/api/user/avatar', {
+      const res = await fetch('https://livestocklogistics.animbiz.com/api/user/avatar', {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
         body: formData
@@ -62,7 +62,7 @@ const UserProfile = () => {
 
       const data = await res.json();
       if (res.ok && data.avatar) {
-        const avatarUrl = `http://localhost:5000${data.avatar}`;
+        const avatarUrl = `https://livestocklogistics.animbiz.com/livestock-logistics-backend${data.avatar}`;
         setAvatarPreview(avatarUrl);
         localStorage.setItem('avatar', avatarUrl);
         window.dispatchEvent(new Event('storage'));
@@ -87,7 +87,7 @@ const UserProfile = () => {
     }
 
     try {
-      const res = await fetch('http://localhost:5000/api/user/update', {
+      const res = await fetch('https://livestocklogistics.animbiz.com/api/user/update', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

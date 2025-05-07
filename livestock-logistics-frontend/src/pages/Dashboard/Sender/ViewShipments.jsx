@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
 
-const socket = io('http://localhost:5000/');
+const socket = io('https://livestocklogistics.animbiz.com/');
 
 const ViewShipments = () => {
   const [shipments, setShipments] = useState([]);
@@ -22,7 +22,7 @@ const ViewShipments = () => {
   const mapInstance = useRef(null);
 
   const fetchShipments = async () => {
-    const res = await fetch('http://localhost:5000/api/shipment/all', {
+    const res = await fetch('https://livestocklogistics.animbiz.com/api/shipment/all', {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -74,7 +74,7 @@ const ViewShipments = () => {
   };
 
   const confirmTransporter = async (shipmentId) => {
-    const res = await fetch(`http://localhost:5000/api/shipment/${shipmentId}/confirm`, {
+    const res = await fetch(`https://livestocklogistics.animbiz.com/api/shipment/${shipmentId}/confirm`, {
       method: 'PATCH',
       headers: {
         Authorization: `Bearer ${token}`,
