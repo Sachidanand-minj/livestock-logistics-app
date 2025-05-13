@@ -1,4 +1,5 @@
 const Shipment = require('../models/Shipment');
+const Notification = require('../models/Notification');
 
 module.exports = (server) => {
   const io = require('socket.io')(server, {
@@ -8,17 +9,29 @@ module.exports = (server) => {
     }
   });
 
-  io.on('connection', (socket) => {
-    console.log('🚛 Transporter connected via Socket.IO');
+  // 🔥 Make globally accessible
+  global.io = io;
 
+  io.on('connection', (socket) => {
+    console.log('✅ New client connected');
+
+    // 🔔 User joins personal notification room
+    socket.on('registerUser', (userId) => {
+      if (userId) {
+        socket.join(userId.toString());
+        console.log(`📥 User ${userId} joined room`);
+      }
+    });
+
+    // 📍 Transporter sends location update
     socket.on('locationUpdate', async ({ shipmentId, lat, lng }) => {
       try {
         const shipment = await Shipment.findById(shipmentId);
         if (!shipment) return;
 
-        // Push to travel history and update current location
         shipment.travelHistory = shipment.travelHistory || [];
         shipment.travelHistory.push({ lat, lng, timestamp: new Date() });
+
         shipment.currentLocation = { lat, lng };
         shipment.status = 'In Transit';
         shipment.timestamps = shipment.timestamps || {};
@@ -28,10 +41,11 @@ module.exports = (server) => {
 
         io.emit('locationUpdated', { shipmentId, lat, lng });
       } catch (err) {
-        console.error('Location update error:', err.message);
+        console.error('🚨 Location update error:', err.message);
       }
     });
 
+    // ✅ Mark shipment as delivered
     socket.on('completeShipment', async ({ shipmentId }) => {
       try {
         await Shipment.findByIdAndUpdate(shipmentId, {
@@ -41,12 +55,13 @@ module.exports = (server) => {
 
         io.emit('shipmentCompleted', { shipmentId });
       } catch (err) {
-        console.error('Completion error:', err.message);
+        console.error('🚨 Completion error:', err.message);
       }
     });
 
+    // 🔌 Cleanup
     socket.on('disconnect', () => {
-      console.log('Transporter disconnected');
+      console.log('❌ Client disconnected');
     });
   });
 };
