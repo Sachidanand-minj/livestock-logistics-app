@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import io from 'socket.io-client';
+import ProofUpload from '../../../components/ProofUpload';
 
-const socket = io('https://livestocklogistics.animbiz.com/'); // Backend socket server
+const socket = io('https://livestocklogistics.animbiz.com/');
 
 const MyShipments = () => {
   const [myShipments, setMyShipments] = useState([]);
@@ -50,7 +51,9 @@ const MyShipments = () => {
     const data = await res.json();
     if (res.ok) {
       const filtered = data.filter(
-        (s) => s.transporterId && s.transporterId._id === transporterId || s.status === 'Unassigned'
+        (s) =>
+          (s.transporterId && s.transporterId._id === transporterId) ||
+          s.status === 'Unassigned'
       );
       setMyShipments(filtered);
     }
@@ -60,7 +63,6 @@ const MyShipments = () => {
     fetchMyShipments();
   }, []);
 
-  // Filter + Search logic
   const filteredShipments = myShipments.filter((s) => {
     const matchesStatus = statusFilter === 'All' || s.status === statusFilter;
     const matchesSearch =
@@ -70,7 +72,6 @@ const MyShipments = () => {
     return matchesStatus && matchesSearch;
   });
 
-  // Pagination logic
   const indexOfLastShipment = currentPage * shipmentsPerPage;
   const indexOfFirstShipment = indexOfLastShipment - shipmentsPerPage;
   const currentShipments = filteredShipments.slice(indexOfFirstShipment, indexOfLastShipment);
@@ -81,22 +82,6 @@ const MyShipments = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handlePerPageChange = (e) => {
-    setShipmentsPerPage(Number(e.target.value));
-    setCurrentPage(1);
-  };
-
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
-    setCurrentPage(1);
-  };
-
-  const handleStatusChange = (e) => {
-    setStatusFilter(e.target.value);
-    setCurrentPage(1);
-  };
-
-  
   return (
     <div>
       {/* Search & Filter */}
@@ -105,7 +90,7 @@ const MyShipments = () => {
           type="text"
           placeholder="Search livestock, source or destination..."
           value={searchTerm}
-          onChange={handleSearchChange}
+          onChange={(e) => setSearchTerm(e.target.value)}
           className="p-2 border rounded w-full md:w-1/2"
         />
 
@@ -113,7 +98,7 @@ const MyShipments = () => {
           <label className="text-sm font-medium">Status:</label>
           <select
             value={statusFilter}
-            onChange={handleStatusChange}
+            onChange={(e) => setStatusFilter(e.target.value)}
             className="p-1 border rounded"
           >
             <option value="All">All</option>
@@ -125,7 +110,7 @@ const MyShipments = () => {
           <label className="text-sm font-medium ml-4">Per Page:</label>
           <select
             value={shipmentsPerPage}
-            onChange={handlePerPageChange}
+            onChange={(e) => setShipmentsPerPage(Number(e.target.value))}
             className="p-1 border rounded"
           >
             <option value={3}>3</option>
@@ -141,22 +126,58 @@ const MyShipments = () => {
           <p className="text-center text-gray-500">No shipments match your search/filter.</p>
         ) : (
           currentShipments.map((s) => (
-            <div key={s._id} className="bg-white p-4 rounded shadow border-l-4 border-blue-500">
-              <h4 className="text-lg font-semibold">{s.livestockType} ({s.quantity})</h4>
-              <p className="text-sm text-gray-600">From: {s.source}</p>
-              <p className="text-sm text-gray-600">To: {s.destination}</p>
-              <p className="text-sm mt-2 font-medium text-blue-600">Status: {s.status}</p>
+            <div
+              key={s._id}
+              className="bg-white p-6 rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition duration-200"
+            >
+              <h4 className="text-xl font-semibold mb-1">{s.livestockType} ({s.quantity})</h4>
+              <p className="text-sm text-gray-600 mb-1">From: <span className="font-medium text-gray-800">{s.source}</span></p>
+              <p className="text-sm text-gray-600 mb-1">To: <span className="font-medium text-gray-800">{s.destination}</span></p>
+              <p className="text-sm mt-1 font-medium text-blue-600">Status: {s.status}</p>
 
               {s.status === 'Confirmed' && (
-                <div className="mt-2">
-                  <button
-                    onClick={() => handleStartTracking(s._id)}
-                    className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
-                  >
-                    Start Tracking
-                  </button>
-                  {trackingId === s._id && (
-                    <p className="text-sm text-green-600 mt-1">📍 Live tracking active</p>
+                <div className="mt-4 space-y-3">
+                  {s.proofRejected && (
+                    <>
+                      <p className="text-red-600 text-sm font-medium">❌ Previous proof was rejected. Please re-upload.</p>
+                      <ProofUpload
+                        shipmentId={s._id}
+                        onSuccess={(updated) => {
+                          setMyShipments((prev) =>
+                            prev.map((ship) => ship._id === updated._id ? updated : ship)
+                          );
+                        }}
+                      />
+                    </>
+                  )}
+
+                  {!s.proofUploaded && !s.proofRejected && (
+                    <ProofUpload
+                      shipmentId={s._id}
+                      onSuccess={(updated) => {
+                        setMyShipments((prev) =>
+                          prev.map((ship) => ship._id === updated._id ? updated : ship)
+                        );
+                      }}
+                    />
+                  )}
+
+                  {s.proofUploaded && s.proofStatus === 'pending' && (
+                    <p className="text-yellow-600 text-sm">✅ Proof uploaded. Awaiting admin approval.</p>
+                  )}
+
+                  {s.proofStatus === 'approved' && (
+                    <>
+                      <button
+                        onClick={() => handleStartTracking(s._id)}
+                        className="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700"
+                      >
+                        Start Tracking
+                      </button>
+                      {trackingId === s._id && (
+                        <p className="text-sm text-green-600 mt-1">📍 Live tracking active</p>
+                      )}
+                    </>
                   )}
                 </div>
               )}
@@ -165,7 +186,7 @@ const MyShipments = () => {
         )}
       </div>
 
-      {/* Pagination Controls */}
+      {/* Pagination */}
       {totalPages > 1 && (
         <div className="flex justify-center items-center mt-6 space-x-2">
           <button
@@ -180,9 +201,10 @@ const MyShipments = () => {
             <button
               key={page}
               onClick={() => goToPage(page)}
-              className={`px-3 py-1 rounded border ${
-                currentPage === page ? 'bg-blue-600 text-white' : 'bg-white text-blue-600 border-blue-600'
-              }`}
+              className={`px-3 py-1 rounded border ${currentPage === page
+                ? 'bg-blue-600 text-white'
+                : 'bg-white text-blue-600 border-blue-600'
+                }`}
             >
               {page}
             </button>

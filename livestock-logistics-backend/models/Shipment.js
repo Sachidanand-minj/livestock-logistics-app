@@ -25,7 +25,18 @@ const ShipmentSchema = new mongoose.Schema({
   timestamps: {
     startedAt: Date,
     completedAt: Date
-  }
+  },
+    // 📸 Proof verification
+    proofPhoto: { type: String, default: "" },
+    proofVideo: { type: String, default: "" },
+    proofUploaded: { type: Boolean, default: false },
+    proofRejected: { type: Boolean, default: false },
+    proofStatus: {
+      type: String,
+      enum: ['pending', 'approved', 'rejected'],
+      default: 'pending'
+    }
+    
 }, { timestamps: true });
 
 module.exports = mongoose.model('Shipment', ShipmentSchema);

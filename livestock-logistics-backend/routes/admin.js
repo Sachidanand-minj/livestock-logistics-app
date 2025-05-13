@@ -9,7 +9,8 @@ const {
   rejectUser,
   createUser,
   deleteUser,
-  deleteShipment
+  deleteShipment,
+  verifyProof
 } = require('../controllers/adminController');
 
 // 🛡 Protected routes (admin only)
@@ -20,6 +21,7 @@ router.patch('/users/:id/reject', auth, role('admin'), rejectUser);
 router.post('/users', auth, role('admin'), createUser);
 router.delete('/users/:id', auth, role('admin'), deleteUser);
 router.delete('/shipments/:id', auth, role('admin'), deleteShipment);
+router.patch('/verify-proof/:shipmentId', verifyProof);
 
 
 

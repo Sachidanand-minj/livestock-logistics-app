@@ -45,7 +45,7 @@ exports.approveUser = async (req, res) => {
 
     const user = await User.findByIdAndUpdate(
       id,
-      { status: 'approved' },
+      { verificationStatus: 'verified' },
       { new: true }
     ).select('-password -resetToken -resetExpires');
 
@@ -171,6 +171,30 @@ exports.rejectUser = async (req, res) => {
   } catch (err) {
     console.error('rejectUser error:', err);
     res.status(500).json({ error: 'Error rejecting user' });
+  }
+};
+
+/**
+ * Proof verification of shipments 
+ */
+exports.verifyProof = async (req, res) => {
+  const { shipmentId } = req.params;
+  const { approved } = req.body;
+
+  try {
+    const shipment = await Shipment.findById(shipmentId);
+    if (!shipment) return res.status(404).json({ msg: 'Shipment not found' });
+
+    shipment.proofVerified = approved;
+    shipment.proofRejected = !approved;
+    shipment.proofStatus = approved ? 'approved' : 'rejected';
+
+    await shipment.save();
+
+    res.status(200).json({ msg: `Proof ${approved ? 'approved' : 'rejected'}.`, shipment });
+  } catch (err) {
+    console.error('Error verifying proof:', err);
+    res.status(500).json({ msg: 'Server error during proof verification' });
   }
 };
 

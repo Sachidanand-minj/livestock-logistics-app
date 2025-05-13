@@ -3,6 +3,10 @@ const router = express.Router();
 
 const auth = require('../middlewares/authMiddleware');
 const role = require('../middlewares/roleMiddleware');
+const uploadProofMiddleware = require('../middlewares/proofUploadMiddleware');
+const shipmentController = require('../controllers/shipmentController');
+
+
 
 const {
   createShipment,
@@ -27,5 +31,15 @@ router.patch('/:id/confirm', auth, role('sender'), confirmTransporter);
 // ✅ You can add additional routes as needed:
 // router.patch('/:id/location', auth, role('transporter'), updateLocation);
 // router.patch('/:id/mark-delivered', auth, role('transporter'), markAsDelivered);
+
+// Upload photo and video proof for a shipment
+router.post(
+  '/:shipmentId/upload-proof', // 🔥 Remove `/shipments`
+  uploadProofMiddleware.fields([
+    { name: 'photo', maxCount: 1 },
+    { name: 'video', maxCount: 1 }
+  ]),
+  shipmentController.uploadProof
+);
 
 module.exports = router;
